@@ -8,12 +8,12 @@ notes.get("/", (req, res) =>
 );
 
 // GET Route for a specific note
-notes.get('/:note_id', (req, res) => {
-    const noteId = req.params.note_id;
+notes.get('/:id', (req, res) => {
+    const noteId = req.params.id;
     readFile("./db/db.json", "utf-8")
         .then((data) => JSON.parse(data))
         .then((json) => {
-            const result = json.filter((notes) => notes.note_id === noteId);
+            const result = json.filter((notes) => notes.id === noteId);
             return result.length > 0
             ? res.json(result)
             : res.json("No note with that ID");
@@ -21,16 +21,16 @@ notes.get('/:note_id', (req, res) => {
 });
 
  // DELETE Route for a specific note
- notes.delete("/:note_id", (req, res) => {
-    const noteId = req.params.note_id;
+ notes.delete("/:id", (req, res) => {
+    const noteId = req.params.id;
     readFile("./db/db.json", "utf-8")
         .then((data) => JSON.parse(data))
         .then((json) => {
             // make a new array of all notes except the one with the ID provided in the URL
-            const result = json.filter((notes) => notes.note_id !== noteId);
+            const result = json.filter((notes) => notes.id !== noteId);
     
             // save that array to db.json
-            writeFile("./db/db.json", result);
+            writeFile("./db/db.json", JSON.stringify(result));
     
             // respond to the DELETE request
             res.json(`Note ${noteId} has been deleted`);
@@ -39,8 +39,6 @@ notes.get('/:note_id', (req, res) => {
   
 // POST Route for a new note
 notes.post("/", (req, res) => {
-    console.log(req.body);
-  
     const { title, text } = req.body;
   
     if (req.body) {
@@ -48,7 +46,7 @@ notes.post("/", (req, res) => {
         const newNote = {
             title,
             text,
-            note_id: uuidv4()
+            id: uuidv4()
         };
         
         // rewrite file with newNote object appended

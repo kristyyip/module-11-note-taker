@@ -1,6 +1,5 @@
 // import necessary modules
 const express = require("express");
-const {readFile, writeFile} = require("fs").promises;
 const path = require("path");
 const api = require("./routes/index.js")
 
@@ -16,10 +15,12 @@ app.use(express.static("public"));
 
 app.use("/api", api)
 
+// GET route for notes page
 app.get("/notes", (req, res) => 
     res.sendFile(path.join(__dirname, "/public/notes.html"))
 );
 
+// GET wildcard route to direct users to index.html otherwise
 app.get("*", (req, res) => 
     res.sendFile(path.join(__dirname, "/public/index.html"))
 );
